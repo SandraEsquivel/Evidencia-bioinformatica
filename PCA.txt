@@ -1,0 +1,103 @@
+###Primeroooo recuerda establecer el directorio de trabajo
+
+
+###Paquetes a utilizar
+
+#Para el análisis de correlación
+
+install.packages("corrr")
+library('corrr')
+
+#Para visualizar la matriz de correlación
+
+install.packages("ggcorrplot")
+library(ggcorrplot)
+
+#Para el PCA
+
+install.packages("FactoMineR")
+library("FactoMineR")
+
+
+###Para cargar tus datos usa read.csv() y para ver que show usa str
+
+datoscrot<- read.csv("varcrot2.csv")
+str(datoscrot)
+
+###Para checar que no haya missing valuessss
+colSums(is.na(datoscrot))
+
+####El show es unicamente con datos numéricos, no ocupamos la primera columna segun io, asi que adioossssss
+
+numdc <- datoscrot[,2:14]
+#Nomas para ver
+head(numdc)
+#éxito
+
+###Usando scale vamos a normalizar nuestros datitos
+
+data_normalized <- scale(numdc)
+head(data_normalized)
+#Checaaa queeeee ya no tienes los mismos númerossss
+
+###Toca hacer la matriz de correlaciones (usando el comando cor del paquete corrr) y visualizarla en ggplot2###
+
+corr_matrix <- cor(data_normalized)
+
+#Carga estop
+
+library('corrr')
+library(ggplot2)
+library(ggcorrplot)
+
+matrizcor<-ggcorrplot(corr_matrix)
+
+#Te sale un bonito heatmap<3
+
+###Recuerda que:
+#The result of the correlation matrix can be interpreted as follow: 
+#The higher the value, the most positively correlated the two variables are.
+#The closer the value to -1, the most negatively correlated they are.##########
+
+###Ahora si toca el PCA
+
+data.pca <- princomp(corr_matrix)
+summary(data.pca)
+
+#Analiza lo de cumulative portion, cala que entre los dos primeros componentes se explica el 99% de la varianza, so, agarras esos, acuerdate de que the $ operator is used to extract or subset a specific part of a data object in R.#
+
+data.pca$loadings[, 1:2]
+
+
+###Para obtener la scree plot que nos dice la importancia de cada componente
+
+install.packages("devtools")
+library("devtools")
+install_github("kassambara/factoextra")
+
+##Te va a salió algo de skip updates, le diste espacio, enter, tecleaste un numero ajsjs pero tranqui que solito pasa##
+
+library("factoextra")
+
+fviz_eig(data.pca, addlabels = TRUE)
+##Tadaaaa! Si te salió nmmssss
+###Lo repetiste para ponerle nombre y poder volverlo a llamarrrr
+
+screeplot<-fviz_eig(data.pca, addlabels = TRUE)
+
+###Para graficar las variables, o sea, tener el biplottttt
+
+biplot<-fviz_pca_var(data.pca, col.var = "black")
+
+###Para ver que tan bien estan representadas las variablessss
+
+cos2<-fviz_cos2(data.pca, choice = "var", axes = 1:2)
+
+###Para unirlos
+
+biplotycos2<-fviz_pca_var(data.pca, col.var = "cos2",
+            gradient.cols = c("black", "orange", "green"),
+            repel = TRUE)
+
+
+###LISTOOOO

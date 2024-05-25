@@ -1,0 +1,78 @@
+### LOOPS ##
+# para repetir secuencia / vector o lista # varios tipos #
+
+## for loops ##
+data(mtcars)
+str(mtcars)
+
+## repetir filas de base de datos e imprimir valores de la columna mpg##
+for(i in 1:nrow(mtcars)){
++     print(mtcars$mpg[i])
++ }
+
+# crear una nueva variable "hp_per_weight" dividiendo caballos de fuerza por el peso y agregarlo al data frame #
+for(i in 1:nrow(mtcars)){
+  mtcars$hp_per_weight[i] = mtcars$hp[i]/mtcars$wt[i]
+}
+
+# crear una grafica de barras de la variable mpg y variable gear #
+for(i in unique(mtcars$gear)){
+  barplot(mtcars$mpg[mtcars$gear==i],
+          main = paste("MPG by Gear (",i,")"))
+}
+
+#calcular media de mpg para cada valor único de la variable cyl y guardar los resultados en un nuevo data frame #
+results <- data.frame(cyl=numeric(0), mean_mpg=numeric(0))
+for(i in unique(mtcars$cyl)){
+  mean_mpg <- mean(mtcars$mpg[mtcars$cyl==i])
+  results <- rbind(results, data.frame(cyl=i, mean_mpg=mean_mpg))
+}
+
+# modelo de regresión linear para mpg como función de caballos de fuerza, separada de cada valor único de la variable gear y guardar los datos en una lista #
+results_list <- list()
+for(i in unique(mtcars$gear)){
+  model <- lm(mpg ~ hp, data = mtcars[mtcars$gear == i,])
+  results_list[[as.character(i)]] <- model
+}
+
+
+
+## While loops ##
+# calcular el promedio de millas por galon (mpg) para todos los carros #
+
+# cargar datos
+data(mtcars)
+
+# inicializar variables para suma de mpg y num de carritos 
+mpg_sum <- 0
+car_count <- 0
+
+### Iniciar el while loop ###
+i <- 1
+while(i <= nrow(mtcars)) {
+   mpg_sum <- mpg_sum + mtcars$mpg[i]
+   car_count <- car_count + 1
+   i <- i + 1}
+
+# Calcular promedio de mpg
+avg_mpg <- mpg_sum / car_count
+print(avg_mpg)
+
+# imprimir nombres de todos los carritos en la base que tienen hp más de 100 #
+i <- 1
+while(i <= nrow(mtcars)) {
+  if(mtcars$hp[i] > 100) {
+    print(mtcars$name[i])}
+  i <- i + 1}
+
+# Encontrar el primer carrito en la base de datos que tenga peso (wt) menor a dos usando el loopsito #
+i <- 1
+while(i <= nrow(mtcars)) {
+  if(mtcars$wt[i] < 2) {
+    print(mtcars$name[i])
+    break}
+  i <- i + 1}
+
+
+
+#### FIN ####
